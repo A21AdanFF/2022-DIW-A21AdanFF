@@ -1,0 +1,28 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { products } from "../lib/products";
+export const getStaticPaths = async () => {
+  return products.map((p) => {
+    return {
+      params: {
+        product: p.title.toLowerCase().replace(/\s/, "_"),
+      },
+    };
+  });
+};
+const { product } = Astro.params;
+const objProduct = products.find(
+  (p) => p.title.toLowerCase().replace(/\s/, "_") === product
+);
+---
+
+<BaseLayout>
+  <h1 class="text-4xl">{objProduct.title}</h1>
+  <div class="border-t-2 border-black opacity-60 w-full col-span-3 rounded-md">
+  </div>
+  <span
+    class="col-span-1"
+    style={`background: ${objProduct.img}; height:180px; background-repeat:no-repeat;background-size:cover;`}
+  ></span>
+  <p class="col-span-2">{objProduct.description}</p>
+</BaseLayout>
