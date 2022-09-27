@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { products } from "../../lib/products";
+export const getStaticPaths = async () => {
+  const langs = Object.keys(products);
+  const toret = langs
+    .map((lang) => {
+      return products[lang].map((p) => {
+        return {
+          params: {
+            product: p.title.toLowerCase().replace(/\s/, "_"),
+            lang,
+          },
+        };
+      });
+    })
+    .flat();
+  console.log(toret);
+  return toret;
+};
+const { lang, product } = Astro.params;
+const objProduct = products[lang].find(
+  (p) => p.title.toLowerCase().replace(/\s/, "_") === product
+);
+---
+
+<BaseLayout lang={lang} url={product}>
+  <h1 class="text-4xl">{objProduct.title}</h1>
+  <div class="border-t-2 border-black opacity-60 w-full col-span-3 rounded-md">
+  </div>
+  <span
+    class="col-span-1"
+    style={`background: ${objProduct.img}; height:180px; background-repeat:no-repeat;background-size:cover;`}
+  ></span>
+  <p class="col-span-2">{objProduct.description}</p>
+</BaseLayout>

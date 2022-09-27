@@ -1,70 +1,96 @@
 ---
 import Fa from "svelte-fa/src/fa.svelte";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
-let currentLanguage = "GL";
+import { products } from "../lib/products";
+const languages = Object.keys(products);
+const { url, redirect, lang } = Astro.props;
+let currentLanguage = lang ?? languages[0];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
-    <style is:global>
-      .dropdown {
-        @apply relative;
-      }
-      .dropdown-content {
-        display: none;
-        @apply absolute;
-      }
-      .dropdown:hover .dropdown-content {
-        display: grid;
-      }
-    </style>
-    <title>Astro</title>
-  </head>
-  <body>
-    <main class="grid auto-rows-max bg-bakery-primary min-h-screen h-fit">
-      <nav class="flex justify-between items-center bg-bakery-dark h-fit px-4">
-        <div class="flex">
-          <h1 class="font-poppins">Logo</h1>
+<script
+  url={url}
+  currentLanguage={currentLanguage}
+  redirect={redirect ?? false}
+  is:inline
+>
+  const redirect = document
+    .getElementsByTagName("script")[0]
+    .getAttribute("redirect");
+  const currentLanguage = document
+    .getElementsByTagName("script")[0]
+    .getAttribute("currentLanguage");
+  const url =
+    document.getElementsByTagName("script")[0].getAttribute("url") ?? "";
+  if (redirect) window.location.href = `/${currentLanguage}/${url}`;
+</script>
+
+<meta charset="utf-8" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="viewport" content="width=device-width" />
+<meta name="generator" content={Astro.generator} />
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:ital@0;1&display=swap"
+  rel="stylesheet"
+/>
+<style is:global>
+  .dropdown {
+    @apply relative;
+  }
+  .dropdown-content {
+    display: none;
+    @apply absolute bg-bakery-dark right-0;
+  }
+  .dropdown:hover .dropdown-content {
+    @apply grid shadow-md;
+  }
+  .dropdown-content * {
+    @apply w-10 flex justify-center;
+  }
+  .dropdown-content *:hover {
+    @apply bg-bakery-light;
+  }
+</style>
+<title>Astro</title>
+
+<body>
+  <main class="grid auto-rows-max min-h-screen h-fit">
+    <nav class="flex justify-between items-center bg-bakery-dark h-fit px-4">
+      <a href={`/${currentLanguage}/`} class="flex gap-2 items-center">
+        <h1 class="font-poppins">Logo</h1>
+        <Fa client:visible icon={faHome} />
+      </a>
+      <div class="flex">
+        <div
+          class="px-2 py-3 flex justify-center items-center hover:bg-bakery-light"
+        >
+          <a href={`/${currentLanguage}/contact`}>Contact</a>
         </div>
-        <div class="flex">
-          <div
-            class="px-2 py-3 flex justify-center items-center hover:bg-bakery-light"
-          >
-            <a href="/"><Fa client:visible icon={faHome} /></a>
-          </div>
-          <div
-            class="px-2 py-3 flex justify-center items-center hover:bg-bakery-light"
-          >
-            <a href="/contact">Contact</a>
-          </div>
-          <div
-            class="px-2 py-3 flex justify-center items-center hover:bg-bakery-light"
-          >
-            <a>About</a>
-          </div>
+        <div
+          class="px-2 py-3 flex justify-center items-center hover:bg-bakery-light"
+        >
+          <a href={`/${currentLanguage}/catalogue`}>Catalogue</a>
         </div>
-        <div class="flex">
-          <div class="dropdown cursor-pointer">
-            <span class="dropbtn">{currentLanguage}</span>
-            <div class="dropdown-content">
-              <span>GL</span><span>ES</span>
-            </div>
-          </div>
+        <div
+          class="px-2 py-3 flex justify-center items-center hover:bg-bakery-light"
+        >
+          <a href={`/${currentLanguage}/about`}>About</a>
         </div>
-      </nav>
-      <div
-        class="grid grid-cols-1 md:grid-cols-3 justify-center px-20 py-4 gap-2"
-      >
-        <slot />
       </div>
-    </main>
-  </body>
-</html>
+      <div class="flex">
+        <div class="dropdown cursor-pointer">
+          <span class="dropbtn">{currentLanguage.toUpperCase()}</span>
+          <div class="dropdown-content">
+            {
+              languages.map((language) => (
+                <a href={`/${language}/${url ?? ""}`}>
+                  {language.toUpperCase()}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </nav>
+    <slot />
+  </main>
+</body>

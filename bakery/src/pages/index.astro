@@ -1,18 +1,5 @@
 ---
-import Product from "../components/Product.svelte";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { products } from "../lib/products";
 ---
 
-<BaseLayout>
-  {
-    products.map((p) => (
-      <Product
-        id={p.title.toLowerCase().replace(/\s/, "_")}
-        client:visible
-        img={p.img}
-        title={p.title}
-      />
-    ))
-  }
-</BaseLayout>
+<BaseLayout redirect={true} />

@@ -1,0 +1,36 @@
+---
+import Product from "../../components/Product.svelte";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { products } from "../../lib/products";
+export const getStaticPaths = async () => {
+  const langs = Object.keys(products);
+  const toret = langs
+    .map((lang) => {
+      return {
+        params: {
+          lang,
+        },
+      };
+    })
+    .flat();
+  console.log(toret);
+  return toret;
+};
+
+const { lang } = Astro.params;
+---
+
+<BaseLayout lang={lang} url="catalogue">
+  <div class="grid grid-cols-1 md:grid-cols-3 justify-center px-20 py-4 gap-2">
+    {
+      products[lang].map((p) => (
+        <Product
+          id={p.title.toLowerCase().replace(/\s/, "_")}
+          client:visible
+          img={p.img}
+          title={p.title}
+        />
+      ))
+    }
+  </div>
+</BaseLayout>
